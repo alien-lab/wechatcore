@@ -1,4 +1,4 @@
-package com.alienlab.wechat.response;
+package com.alienlab.wechat.common;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
