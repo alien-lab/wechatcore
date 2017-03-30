@@ -60,4 +60,13 @@ public class OnlivePraise {
     public void setPraiseTime(String praiseTime) {
         this.praiseTime = praiseTime;
     }
+
+    public OnlivePraise() {
+    }
+
+    public OnlivePraise(Long streamNo, Long roomNo, String openId) {
+        this.streamNo = streamNo;
+        this.roomNo = roomNo;
+        this.openId = openId;
+    }
 }

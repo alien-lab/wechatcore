@@ -9,7 +9,7 @@ import java.util.List;
  * Created by Wang on 2017/3/28.
  */
 public interface OnliveCommentRepository extends JpaRepository<OnliveComment,Long>{
-    OnliveComment findOnliveCommentByCommentNo(String commentNo);
+    List<OnliveComment> findOnliveCommentByRoomNoAndOpenIdOrderAndStreamNoOrderByCommentTimeDesc(Long roomNo, String openId, Long streamNo);
 
-    List<OnliveComment> findOnliveCommentByRoomNoAndOpenIdOrderByStreamNoAndCommentTimeDesc(String RoomNo, String OpenId);
+    List<OnliveComment> findOnliveCommentByRoomNoAndOpenIdOrderByStreamNoAndCommentTimeDesc(Long roomNo, String openId);
 }

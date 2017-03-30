@@ -96,4 +96,14 @@ public class OnliveComment {
     public void setToNick(String toNick) {
         this.toNick = toNick;
     }
+
+    public OnliveComment() {
+    }
+
+    public OnliveComment(Long streamNo, Long roomNo, String openId, String content) {
+        this.streamNo = streamNo;
+        this.roomNo = roomNo;
+        this.openId = openId;
+        this.content = content;
+    }
 }

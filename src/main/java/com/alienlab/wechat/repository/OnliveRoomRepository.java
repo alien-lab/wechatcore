@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface OnliveRoomRepository extends JpaRepository<OnliveRoom,Long> {
-    OnliveRoom findOnliveRoomByRoomNo(String roomNo);
+    OnliveRoom findOnliveRoomByRoomNo(Long roomNo);
 }

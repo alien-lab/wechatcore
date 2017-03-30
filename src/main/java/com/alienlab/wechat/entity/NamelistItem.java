@@ -171,9 +171,8 @@ public class NamelistItem {
 
     }
 
-    public NamelistItem(Long no, String phone, int count, String endTime, String status, String openId, String nickName,
+    public NamelistItem(String phone, int count, String endTime, String status, String openId, String nickName,
                         String headerimg, String sex, String province, String city, String country, String unionId, String privilege) {
-        this.no = no;
         this.phone = phone;
         this.count = count;
         this.endTime = endTime;

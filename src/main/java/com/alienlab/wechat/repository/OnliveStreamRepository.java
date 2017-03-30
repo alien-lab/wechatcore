@@ -11,9 +11,9 @@ import java.util.List;
  */
 @Repository
 public interface OnliveStreamRepository extends JpaRepository<OnliveStream,Long>{
-    OnliveStream findOnliveStreamByContentNo(String contentNo);
+    OnliveStream findOnliveStreamByContentNo(Long contentNo);
 
-    List<OnliveStream> findOliveStreamByRoomNoAndOpenIdAndContentTimeOrderByContentTimeDesc(String roomNo, String openId, String contentTime);
+    List<OnliveStream> findOliveStreamByRoomNoAndOpenIdAndContentTimeOrderByContentTimeDesc(Long roomNo, String openId, String contentTime);
 
-    List<OnliveStream> findOnliveStreamByContentNoAndRoomNoAndOpenId(String contentNo, String roomNo, String openId);
+    List<OnliveStream> findOnliveStreamByContentNoAndRoomNoAndOpenId(Long contentNo, Long roomNo, String openId);
 }
