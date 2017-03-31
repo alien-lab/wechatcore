@@ -148,9 +148,8 @@ public class OnliveStream {
     public OnliveStream() {
     }
 
-    public OnliveStream(String contentNo, String roomNo, String contentType, String time, String openId, String unionId, String nick,
+    public OnliveStream(String roomNo, String contentType, String time, String openId, String unionId, String nick,
                         String content, String link, String contentPic, String contentPicLink, String media) {
-        this.contentNo = contentNo;
         this.roomNo = roomNo;
         this.contentType = contentType;
         this.time = time;
@@ -162,5 +161,22 @@ public class OnliveStream {
         this.contentPic = contentPic;
         this.contentPicLink = contentPicLink;
         this.media = media;
+        //本地链接未生成
+        if((!this.getContentType().equals("text"))&&(this.getLink()==null||this.getLink().equals(""))){
+            //调用多媒体接口进行下载后，更新本地连接字段
+            switch(this.getContentType()){
+                case "image":
+                case "voice":{
+                    this.setMedia(media);
+                    break;
+                }
+                case "video":
+                case "shortvideo":{
+                    this.setMedia(media);
+                    this.setContentPic(contentPic);
+                    break;
+                }
+            }
+        }
     }
 }

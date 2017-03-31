@@ -14,4 +14,6 @@ public interface OnliveMemberRepository extends JpaRepository<OnliveMember,Long>
     OnliveMember findOnliveMemberByRoomNoAndOpenId(Long roomNo,String openId);
 
     List<OnliveMember> findOnliveMemberByRoomNo(Long roomNo);
+
+    OnliveMember deleteOnliveMemberByRoomNoAndOpenId(Long roomNo,String openId);
 }

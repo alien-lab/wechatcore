@@ -321,11 +321,10 @@ public class OnliveRoom {
 
     }
 
-    public OnliveRoom(PropertyConfig pc, String roomNo, String name, String description, String project, String guest,
+    public OnliveRoom(String roomNo, String name, String description, String project, String guest,
                       SortedMap<String, OnliveMember> speakers, SortedMap<String, OnliveMember> members, NamelistItem manager,
-                      String creatTime, String status, String latestText, String latestPic, String qrcode, String shareLink,
-                      String startTime, String endTime, String speakMode, String cover, String brandCover, String joinMsg, String commentMsg) {
-        this.pc = pc;
+                      String creatTime, String status, String latestText, String latestPic, String qrcode, String startTime,
+                      String endTime, String speakMode, String cover, String brandCover, String joinMsg, String commentMsg) {
         this.roomNo = roomNo;
         this.name = name;
         this.description = description;
@@ -339,7 +338,6 @@ public class OnliveRoom {
         this.latestText = latestText;
         this.latestPic = latestPic;
         this.qrcode = qrcode;
-        this.shareLink = shareLink;
         this.startTime = startTime;
         this.endTime = endTime;
         this.speakMode = speakMode;

@@ -15,5 +15,5 @@ public interface OnliveStreamRepository extends JpaRepository<OnliveStream,Long>
 
     List<OnliveStream> findOliveStreamByRoomNoAndOpenIdAndContentTimeOrderByContentTimeDesc(Long roomNo, String openId, String contentTime);
 
-    List<OnliveStream> findOnliveStreamByContentNoAndRoomNoAndOpenId(Long contentNo, Long roomNo, String openId);
+    OnliveStream findOnliveStreamByContentNoAndRoomNoAndOpenId(Long contentNo, Long roomNo, String openId);
 }
