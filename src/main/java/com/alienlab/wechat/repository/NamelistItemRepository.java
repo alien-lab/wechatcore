@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface NamelistItemRepository extends JpaRepository<NamelistItem,Long> {
     NamelistItem findNamelistItemByPhone(String phone);
 
-//    NamelistItem findNamelistItemByOpenId(String openId);
+    NamelistItem findNamelistItemByOpenId(String openId);
 }

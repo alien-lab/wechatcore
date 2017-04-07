@@ -24,18 +24,13 @@ public class OnlivePraiseService {
         }
     }
 
-    //根据内容流序号和成员微信号查找点赞
-    public OnlivePraise findOnlivePraiseByStreamNoAndOpenId(Long streamNo, String openId){
-        return onlivePraiseRepository.findOnlivePariseByStreamNoAndOpenId(streamNo, openId);
-    }
-
     //根据点赞时间顺序获得当前内容的所有赞
     public List<OnlivePraise> loadPraises(Long streamNo){
         return onlivePraiseRepository.findOnlivePraiseByStreamNoOrderByPraiseTime(streamNo);
     }
 
     //根据内容流序号和时间顺序获得当前直播间的所有赞
-    public List<OnlivePraise> getPraises(Long roomNo){
+    public List<OnlivePraise> getPraises(String roomNo){
         return onlivePraiseRepository.findOnlivePariseByRoomNoOrderByStreamNoAndPraiseTime(roomNo);
     }
 

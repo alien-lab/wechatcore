@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,13 +19,13 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Api(value="/wechatcore-api/NamelistItem",description = "白名单API")
 @RestController
-@RequestMapping("/qm-api")
+@RequestMapping("/wechatcore-api")
 public class ItemController {
     @Autowired
     private NamelistItemService namelistItemService;
 
     @ApiOperation(value = "验证手机号")
-    @PostMapping(value = "/validatePhone")
+    @PostMapping(value = "onlive/newUser")
     public ResponseEntity validatePhone(HttpServletRequest request){
         String phone = request.getParameter("phone");
         boolean isValidate = namelistItemService.validatePhone(phone);
@@ -38,17 +37,16 @@ public class ItemController {
             NamelistItem name = namelistItemService.findNamelistItemByPhone(phone);
             name.setCity(request.getParameter("city"));
             name.setCountry(request.getParameter("country"));
-            name.setOpenId(request.getParameter("openid"));
+            name.setOpenId(request.getParameter("openId"));
             name.setPhone(phone);
             name.setProvince(request.getParameter("province"));
             name.setSex(request.getParameter("sex"));
-            name.setUnionId(request.getParameter("unionid"));
+            name.setUnionId(request.getParameter("unionId"));
             name.setHeaderimg(request.getParameter("headerimg"));
-            name.setNickName(request.getParameter("nickname"));
+            name.setNickName(request.getParameter("nickName"));
             namelistItemService.addNamelistItem(name);
-
-
+            ExecResult right=  new ExecResult(true,"用户创建成功！");
+            return ResponseEntity.ok().body(right);
         }
-        return null;
     }
 }

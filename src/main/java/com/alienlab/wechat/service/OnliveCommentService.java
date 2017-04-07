@@ -25,13 +25,13 @@ public class OnliveCommentService {
     }
 
     //根据评论时间顺序获得当前内容下的所有评论
-    public List<OnliveComment> loadComments(Long roomNo, String openId, Long streamNo){
-        return onliveCommentRepository.findOnliveCommentByRoomNoAndOpenIdOrderAndStreamNoOrderByCommentTimeDesc(roomNo, openId, streamNo);
+    public List<OnliveComment> loadComments(Long streamNo){
+        return onliveCommentRepository.findOnliveCommentByStreamNoOrderByCommentTimeDesc(streamNo);
     }
 
     //根据内容流序号和时间顺序获得当前直播间的所有评论
-    public List<OnliveComment> getComments(Long roomNo, String openId){
-        return onliveCommentRepository.findOnliveCommentByRoomNoAndOpenIdOrderByStreamNoAndCommentTimeDesc(roomNo, openId);
+    public List<OnliveComment> getComments(String roomNo){
+        return onliveCommentRepository.findOnliveCommentByRoomNoOrderByStreamNoAndCommentTimeDesc(roomNo);
     }
 
     //更新评论

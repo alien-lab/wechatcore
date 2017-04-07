@@ -15,7 +15,7 @@ public class OnlivePraise {
     @ApiModelProperty(value="内容流序号")
     private Long streamNo;
     @ApiModelProperty(value="直播间编号")
-    private Long roomNo;
+    private String roomNo;
     @ApiModelProperty(value="成员微信")
     private String openId;
     @ApiModelProperty(value="点赞时间")
@@ -33,11 +33,11 @@ public class OnlivePraise {
 
     @Basic
     @Column(name = "room_no")
-    public Long getRoomNo() {
+    public String getRoomNo() {
         return roomNo;
     }
 
-    public void setRoomNo(Long roomNo) {
+    public void setRoomNo(String roomNo) {
         this.roomNo = roomNo;
     }
 
@@ -64,7 +64,7 @@ public class OnlivePraise {
     public OnlivePraise() {
     }
 
-    public OnlivePraise(Long streamNo, Long roomNo, String openId) {
+    public OnlivePraise(Long streamNo, String roomNo, String openId) {
         this.streamNo = streamNo;
         this.roomNo = roomNo;
         this.openId = openId;

@@ -1,5 +1,6 @@
 package com.alienlab.wechat.entity;
 
+import com.alienlab.wechat.common.ArticleObject;
 import com.alienlab.wechat.common.TypeUtils;
 import com.alienlab.wechat.common.WeixinUtil;
 import com.alienlab.wechat.utils.PropertyConfig;
@@ -9,9 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.persistence.*;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by Wang on 2017/3/27.
@@ -113,8 +112,12 @@ public class OnliveRoom {
 
     @Basic
     @Column(name = "bc_manager")
-    public SortedMap<String, OnliveMember> getSpeakers() {
-        return speakers;
+    public List<OnliveMember> getSpeakers() {
+        List<OnliveMember> s=new ArrayList<OnliveMember>();
+        for(Map.Entry<String,OnliveMember> e:speakers.entrySet()){
+            s.add(e.getValue());
+        }
+        return s;
     }
 
     public void setSpeakers(SortedMap<String, OnliveMember> speakers) {
@@ -137,9 +140,8 @@ public class OnliveRoom {
         return manager;
     }
 
-    public void setManager(NamelistItem manager) {
-//        NamelistItem name = NameList.getName(manager_phone);
-        this.manager = manager;
+    public void setManager(NamelistItem name) {
+        this.manager = name;
     }
 
     @Basic
@@ -291,13 +293,13 @@ public class OnliveRoom {
         }
     }
 
-    public void setBrandcover(String brandCover) {
+    public void setBrandCover(String brandCover) {
         this.brandCover = brandCover;
     }
 
     @Basic
     @Column(name = "bc_join_message")
-    public String getJoinmsg() {
+    public String getJoinMsg() {
         if(joinMsg == null)joinMsg="";
         return joinMsg;
     }
@@ -308,7 +310,7 @@ public class OnliveRoom {
 
     @Basic
     @Column(name = "bc_comment_message")
-    public String getCommentmsg() {
+    public String getCommentMsg() {
         if(commentMsg == null)commentMsg="";
         return commentMsg;
     }
@@ -345,5 +347,64 @@ public class OnliveRoom {
         this.brandCover = brandCover;
         this.joinMsg = joinMsg;
         this.commentMsg = commentMsg;
+    }
+
+    public ArticleObject getArticle(){
+        String latestPic = this.getLatestPic();
+        String latestText = this.getLatestText();
+        String coverPic = this.getBrandCover();
+        String desText = this.getDescription();
+        if(latestPic != null && !latestPic.equals("")){
+            coverPic = latestPic;
+        }
+        if(latestText != null && !latestText.equals("")){
+            coverPic = latestText;
+        }
+        ArticleObject onliveroom=new ArticleObject();
+        onliveroom.setDescription(desText);
+        onliveroom.setPicUrl(coverPic);
+        onliveroom.setTitle(this.getName());
+        onliveroom.setUrl(this.getShareLink());
+        return onliveroom;
+    }
+
+    public String getSpeakerOpenId(){
+        List<OnliveMember> s=getSpeakers();
+        String openids="";
+        for(int i=0;i<s.size();i++){
+            if(i==0){
+                openids+=s.get(i).getOpenId();
+            }else{
+                openids+=","+s.get(i).getOpenId();
+            }
+        }
+        return openids;
+    }
+
+    public OnliveMember getMember(String nickname){
+        for(String openid : members.keySet()){
+            OnliveMember member = members.get(openid);
+            if(member.getNick().equals(nickname)){
+                return member;
+            }
+        }
+        return null;
+    }
+
+    public String getLayoutTime(){
+        String s=this.getStartTime();
+        String e=this.getEndTime();
+        String date="";
+        String time="";
+        if(s.substring(0,8).equals(e.substring(0,8))){
+            date=s.substring(0,8);
+            date=date.substring(0,4)+"/"+date.substring(4,6)+"/"+date.substring(6,8);
+            time=s.substring(8,12)+e.substring(8,12);
+            time=time.substring(0,2)+":"+time.substring(2,4)+"~"+time.substring(4,6)+":"+time.substring(6,8);
+
+            return date+" "+time;
+        }else{
+            return this.getStartTime()+"~"+this.getEndTime();
+        }
     }
 }

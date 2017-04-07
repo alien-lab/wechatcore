@@ -25,13 +25,18 @@ public class OnliveRoomService {
     }
 
     //根据直播间号查找直播间
-    public OnliveRoom findOnliveRoomByRoomNo(Long roomNo){
+    public OnliveRoom findOnliveRoomByRoomNo(String roomNo){
         return onliveRoomRepository.findOnliveRoomByRoomNo(roomNo);
     }
 
     //根据成员微信查找直播间
     public List<OnliveRoom> findOnliveRoomByOpenId(String openId){
         return onliveRoomRepository.findOnliveRoomByOpenId(openId);
+    }
+
+    //查找所有直播间
+    public List<OnliveRoom> findAllOnliveRoom(){
+        return onliveRoomRepository.findAll();
     }
 
     //更新直播间
@@ -45,9 +50,9 @@ public class OnliveRoomService {
     }
 
     //删除直播间
-    public boolean deleteOnliveRoom(Long roomNo){
+    public boolean deleteOnliveRoom(String roomNo){
         try{
-            onliveRoomRepository.delete(roomNo);
+            onliveRoomRepository.deleteOnliveRoomByRoomNo(roomNo);
             return true;
         }catch (Exception e){
             e.printStackTrace();

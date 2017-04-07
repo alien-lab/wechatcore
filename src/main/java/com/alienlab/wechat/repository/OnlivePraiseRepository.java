@@ -9,9 +9,7 @@ import java.util.List;
  * Created by Wang on 2017/3/28.
  */
 public interface OnlivePraiseRepository extends JpaRepository<OnlivePraise,Long>{
-    OnlivePraise findOnlivePariseByStreamNoAndOpenId(Long streamNo, String openId);
-
     List<OnlivePraise> findOnlivePraiseByStreamNoOrderByPraiseTime(Long streamNo);
 
-    List<OnlivePraise> findOnlivePariseByRoomNoOrderByStreamNoAndPraiseTime(Long roomNo);
+    List<OnlivePraise> findOnlivePariseByRoomNoOrderByStreamNoAndPraiseTime(String roomNo);
 }

@@ -1,5 +1,11 @@
 package com.alienlab.wechat.entity;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alienlab.wechat.service.OnliveStart;
+import com.alienlab.wechat.utils.MediaDownloader;
+import com.alienlab.wechat.utils.MediaUtil;
+import com.alienlab.wechat.utils.StreamFileCallback;
+import com.alienlab.wechat.utils.StreamThumbCallback;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -13,7 +19,7 @@ import javax.persistence.*;
 @Table(name = "wx_onlive_content")
 public class OnliveStream {
     @ApiModelProperty(value="内容流序号")
-    private String contentNo;
+    private Long contentNo;
     @ApiModelProperty(value="直播间编号")
     private String roomNo;
     @ApiModelProperty(value="内容流类型")
@@ -37,12 +43,15 @@ public class OnliveStream {
     @ApiModelProperty(value="多媒体文件")
     private String media;
 
+    public OnliveStream(JSONObject s) {
+    }
+
     @Id
     @Column(name = "content_no")
-    public String getContentNo() {
-        return contentNo;
+    public Long getContentNo() {
+        return null;
     }
-    public void setContentNo(String contentNo) {
+    public void setContentNo(Long contentNo) {
         this.contentNo = contentNo;
     }
 
@@ -177,6 +186,35 @@ public class OnliveStream {
                     break;
                 }
             }
+        }
+    }
+
+    public void downLoadMedia(){
+        String path = OnliveStart.streamPath;
+        //如果不存在媒体文件，直接返回
+        if(this.getMedia()==null||this.getMedia().equals(""))return;
+        String mediaurl = MediaUtil.getWechatLink(this.getMedia());
+        String ext="";
+        switch(this.getContentType()){
+            case "image":{
+                ext="jpg";
+                break;
+            }
+            case "voice":{
+                ext="amr";
+                break;
+            }
+            case "video":
+            case "shortvideo":{
+                ext="mp4";
+                break;
+            }
+        }
+        //下载文件自动回调
+        MediaDownloader.addDownload(mediaurl, path, ext, this.getRoomNo(),new StreamFileCallback());
+        //如果缩略图不为空，下载缩略图
+        if(this.getContentPic()!=null&&(!this.getContentPic().equals(""))){
+            MediaDownloader.addDownload(MediaUtil.getWechatLink(this.getContentPic()), path, "jpg", this.getRoomNo(),new StreamThumbCallback());
         }
     }
 }

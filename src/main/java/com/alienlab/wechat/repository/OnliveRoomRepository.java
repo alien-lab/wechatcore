@@ -11,7 +11,9 @@ import java.util.List;
  */
 @Repository
 public interface OnliveRoomRepository extends JpaRepository<OnliveRoom,Long> {
-    OnliveRoom findOnliveRoomByRoomNo(Long roomNo);
+    OnliveRoom findOnliveRoomByRoomNo(String roomNo);
 
     List<OnliveRoom> findOnliveRoomByOpenId(String openId);
+
+    boolean deleteOnliveRoomByRoomNo(String roomNo);
 }

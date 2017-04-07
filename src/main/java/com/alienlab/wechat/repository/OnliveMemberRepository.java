@@ -11,9 +11,9 @@ import java.util.List;
  */
 @Repository
 public interface OnliveMemberRepository extends JpaRepository<OnliveMember,Long>{
-    OnliveMember findOnliveMemberByRoomNoAndOpenId(Long roomNo,String openId);
+    OnliveMember findOnliveMemberByRoomNoAndOpenId(String roomNo,String openId);
 
-    List<OnliveMember> findOnliveMemberByRoomNo(Long roomNo);
+    List<OnliveMember> findOnliveMemberByRoomNo(String roomNo);
 
-    OnliveMember deleteOnliveMemberByRoomNoAndOpenId(Long roomNo,String openId);
+    OnliveMember deleteOnliveMemberByRoomNoAndOpenId(String roomNo,String openId);
 }

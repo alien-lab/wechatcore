@@ -6,6 +6,8 @@ import com.alienlab.wechat.repository.NamelistItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 /**
  * Created by Wang on 2017/3/28.
@@ -53,6 +55,16 @@ public class NamelistItemService {
     //根据手机号查找成员
     public NamelistItem findNamelistItemByPhone(String phone){
         return namelistItemRepository.findNamelistItemByPhone(phone);
+    }
+
+    //根据微信号查找成员
+    public NamelistItem findNamelistItemByOpenId(String openId){
+        return namelistItemRepository.findNamelistItemByOpenId(openId);
+    }
+
+    //查找所有
+    public List<NamelistItem> findAllNamelistItem(){
+        return namelistItemRepository.findAll();
     }
 
     //更新成员

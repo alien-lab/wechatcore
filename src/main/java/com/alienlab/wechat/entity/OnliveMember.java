@@ -1,5 +1,7 @@
 package com.alienlab.wechat.entity;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alienlab.wechat.common.TypeUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -32,6 +34,9 @@ public class OnliveMember {
     private String joinTime;
     @ApiModelProperty(value="是否嘉宾")
     private boolean isVip;
+
+    public OnliveMember(JSONObject member) {
+    }
 
     @Id
     @Column(name = "bc_no")
@@ -126,17 +131,16 @@ public class OnliveMember {
     public OnliveMember(){
     }
 
-    public OnliveMember(String roomNo, String openId, String unionId, String nick, String phone, String pic, String localPic,
-                        String joinType, String joinTime, boolean isVip) {
-        this.roomNo = roomNo;
-        this.openId = openId;
-        this.unionId = unionId;
-        this.nick = nick;
-        this.phone = phone;
-        this.pic = pic;
-        this.localPic = localPic;
-        this.joinType = joinType;
-        this.joinTime = joinTime;
-        this.isVip = isVip;
+    public OnliveMember(String roomNo,NamelistItem name){
+        this.setJoinTime(TypeUtils.getTime());
+        this.setJoinType("system");
+        this.setLocalPic(name.getHeaderimg());
+        this.setNick(name.getNickName());
+        this.setOpenId(name.getOpenId());
+        this.setPhone(name.getPhone());
+        this.setPic(name.getHeaderimg());
+        this.setRoomNo(roomNo);
+        this.setUnionId(name.getUnionId());
+        this.setVip(true);
     }
 }
