@@ -6,13 +6,14 @@ import java.util.List;
 import com.alibaba.fastjson.JSONObject;
 import com.alienlab.wechat.message.BaseMessage;
 import com.alienlab.wechat.message.MessageProcessor;
+import com.alienlab.wechat.utils.IResponse;
 
 /**
  * 默认回复类
  * @author 橘
  *
  */
-public class BaseResponse implements  IResponse {
+public class BaseResponse implements IResponse {
 
 	@Override
 	public void preResponse(BaseMessage msg, JSONObject param) {

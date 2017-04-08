@@ -1,7 +1,6 @@
 package com.alienlab.wechat.utils;
 
 import com.alienlab.wechat.common.ExecResult;
-import com.alienlab.wechat.common.JSONResponse;
 import com.alienlab.wechat.common.TypeUtils;
 import com.alienlab.wechat.entity.OnliveRoom;
 import com.alienlab.wechat.service.OnliveRoomService;
@@ -27,11 +26,11 @@ public class StreamFileCallback extends AsynCallBack {
 		logger.info("StreamFileCallback>>>>"+er.toString());
 		
 		String sql="update wx_onlive_content set content_link='"+data.getString("filename")+"',download_time='"+ TypeUtils.getTime()+"' where content_no="+data.getString("streamno");
-		JSONResponse jr=new JSONResponse();
-		jr.getExecResult(sql, null);
+//		JSONResponse jr=new JSONResponse();
+//		jr.getExecResult(sql, null);
 		
 		sql="SELECT * FROM `wx_onlive_content` a WHERE content_no="+data.getString("streamno");
-		ExecResult result=jr.getSelectResult(sql, null, "wx_onlive_content");
+		ExecResult result=new ExecResult(true, "wx_onlive_content");
 		if(result.getResult()>0){
 			JSONArray ja=(JSONArray)result.getData();
 			if(ja.size()>0){

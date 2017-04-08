@@ -3,6 +3,7 @@ package com.alienlab.wechat.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alienlab.wechat.utils.IResponse;
 import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSON;

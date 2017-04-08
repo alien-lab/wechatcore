@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.alienlab.wechat.common.ArticleObject;
 import com.alienlab.wechat.common.BaseResponse;
-import com.alienlab.wechat.common.IResponse;
+import com.alienlab.wechat.utils.IResponse;
 import com.alienlab.wechat.entity.OnliveRoom;
 import com.alienlab.wechat.message.BaseMessage;
 import com.alienlab.wechat.message.EmenuMessage;
@@ -41,8 +41,8 @@ public class OnliveMenuClick implements IResponse {
 					if(count>9)count = 9;
 					for(int i = 0;i < count;i++){
 						OnliveRoom room = rooms.get(i);
-						ArticleObject onliveroom = room.getArticle();
-						articles.add(onliveroom);
+						ArticleObject onliveroom = new ArticleObject();
+						articles.add(onliveroom.getArticle(room));
 					}
 					res = BaseResponse.getNewsResponse(articles, msg);
 				}

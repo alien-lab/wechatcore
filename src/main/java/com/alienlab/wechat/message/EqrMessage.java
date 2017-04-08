@@ -1,8 +1,7 @@
 package com.alienlab.wechat.message;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alienlab.db.ExecResult;
-import com.alienlab.response.JSONResponse;
+import com.alienlab.wechat.common.ExecResult;
 
 /**
  * 二维码扫描事件类
@@ -49,8 +48,8 @@ public class EqrMessage extends BaseMessage {
 	public void doLog(){
 		String sql="INSERT INTO `alienlab_wechat`.`wx_qr_event_log`(`Openid`,`Unionid`,`eventtime`,`qrkey`) "+
 						" VALUES ('"+this.getFromUserName()+"','','"+this.getCreateTime()+"','"+this.getTicket()+"')";
-		JSONResponse jr=new JSONResponse();
-		ExecResult er=jr.getExecResult(sql, null);
+//		JSONResponse jr=new JSONResponse();
+//		ExecResult er=jr.getExecResult(sql, null);
 	}
 
 }

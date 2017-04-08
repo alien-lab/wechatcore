@@ -1,6 +1,5 @@
 package com.alienlab.wechat.entity;
 
-import com.alienlab.wechat.common.ArticleObject;
 import com.alienlab.wechat.common.TypeUtils;
 import com.alienlab.wechat.common.WeixinUtil;
 import com.alienlab.wechat.utils.PropertyConfig;
@@ -34,7 +33,7 @@ public class OnliveRoom {
     private SortedMap<String, OnliveMember> speakers = new TreeMap<String ,OnliveMember>();
     @ApiModelProperty(value="直播间成员")
     private SortedMap<String, OnliveMember> members = new TreeMap<String ,OnliveMember>();
-    @ApiModelProperty(value="直播间管理员")
+    @ApiModelProperty(value="直播间管理员手机号")
     private NamelistItem manager;
     @ApiModelProperty(value="直播间创建时间")
     private String creatTime;
@@ -110,32 +109,30 @@ public class OnliveRoom {
         this.guest = guest;
     }
 
-    @Basic
-    @Column(name = "bc_manager")
-    public List<OnliveMember> getSpeakers() {
-        List<OnliveMember> s=new ArrayList<OnliveMember>();
-        for(Map.Entry<String,OnliveMember> e:speakers.entrySet()){
-            s.add(e.getValue());
-        }
-        return s;
+    @OneToMany
+    @JoinColumn(name = "bc_manager", referencedColumnName = "member_openid")
+    public SortedMap<String, OnliveMember> getSpeakers() {
+        return speakers;
     }
 
     public void setSpeakers(SortedMap<String, OnliveMember> speakers) {
         this.speakers = speakers;
     }
 
-    @Basic
-    @Column(name = "bc_manager_union")
-    public SortedMap<String, OnliveMember> getMembers() {
+    @OneToMany
+    @JoinColumn(name = "bc_manager_union", referencedColumnName = "member_openid")
+//    public SortedMap<String, OnliveMember> getMembers() {
+//        return members;
+//    }
+    public Map<String, OnliveMember> getMembers() {
         return members;
     }
-
     public void setMembers(SortedMap<String, OnliveMember> members) {
         this.members = members;
     }
 
-    @Basic
-    @Column(name = "stu_name")
+    @OneToOne
+    @JoinColumn(name = "bc_manager_phone", referencedColumnName = "namelist_phone")
     public NamelistItem getManager() {
         return manager;
     }
@@ -349,27 +346,8 @@ public class OnliveRoom {
         this.commentMsg = commentMsg;
     }
 
-    public ArticleObject getArticle(){
-        String latestPic = this.getLatestPic();
-        String latestText = this.getLatestText();
-        String coverPic = this.getBrandCover();
-        String desText = this.getDescription();
-        if(latestPic != null && !latestPic.equals("")){
-            coverPic = latestPic;
-        }
-        if(latestText != null && !latestText.equals("")){
-            coverPic = latestText;
-        }
-        ArticleObject onliveroom=new ArticleObject();
-        onliveroom.setDescription(desText);
-        onliveroom.setPicUrl(coverPic);
-        onliveroom.setTitle(this.getName());
-        onliveroom.setUrl(this.getShareLink());
-        return onliveroom;
-    }
-
     public String getSpeakerOpenId(){
-        List<OnliveMember> s=getSpeakers();
+        List<OnliveMember> s = getSpeaker();
         String openids="";
         for(int i=0;i<s.size();i++){
             if(i==0){
@@ -406,5 +384,13 @@ public class OnliveRoom {
         }else{
             return this.getStartTime()+"~"+this.getEndTime();
         }
+    }
+
+    public List<OnliveMember> getSpeaker() {
+        List<OnliveMember> s=new ArrayList<OnliveMember>();
+        for(Map.Entry<String,OnliveMember> e:speakers.entrySet()){
+            s.add(e.getValue());
+        }
+        return s;
     }
 }

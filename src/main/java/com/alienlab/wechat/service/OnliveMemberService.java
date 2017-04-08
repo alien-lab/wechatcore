@@ -68,7 +68,7 @@ public class OnliveMemberService {
         OnliveRoom room = new OnliveRoom();
         if(!room.getMembers().containsKey(member.getOpenId())){
             if(onliveMemberRepository.save(member) != null){
-                if(room.getJoinmsg().equals("1")){
+                if(room.getJoinMsg().equals("1")){
                     String text = member.getNick()+" 进入您的直播间《"+room.getName()+"》。";
                     TextInfo ti = new TextInfo(text);
                     ti.setToUserName(room.getManager().getOpenId());

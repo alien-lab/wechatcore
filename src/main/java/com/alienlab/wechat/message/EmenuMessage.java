@@ -1,8 +1,7 @@
 package com.alienlab.wechat.message;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alienlab.db.ExecResult;
-import com.alienlab.response.JSONResponse;
+import com.alienlab.wechat.common.ExecResult;
 
 /**
  * 菜单点击事件类
@@ -39,8 +38,8 @@ public class EmenuMessage extends BaseMessage {
 		public void doLog(){
 			String sql="INSERT INTO `alienlab_wechat`.`wx_menu_event_log`(`Openid`,`Unionid`,`eventtime`,`menukey`,`eventtype`) "+
 							" VALUES ('"+this.getFromUserName()+"','','"+this.getCreateTime()+"','"+this.getEventKey()+"','"+this.getEvent()+"')";
-			JSONResponse jr=new JSONResponse();
-			ExecResult er=jr.getExecResult(sql, null);
+//			JSONResponse jr=new JSONResponse();
+//			ExecResult er=jr.getExecResult(sql, null);
 		}
 
 }

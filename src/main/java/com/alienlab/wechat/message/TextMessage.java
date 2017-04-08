@@ -2,7 +2,6 @@ package com.alienlab.wechat.message;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alienlab.wechat.common.ExecResult;
-import com.alienlab.wechat.common.JSONResponse;
 
 /**
  * 文本消息类
@@ -38,8 +37,8 @@ public class TextMessage extends BaseMessage {
 	public void doLog(){
 		String sql="INSERT INTO `alienlab_wechat`.`wx_user_message`(`Openid`,`Unionid`,`Messagetype`,`Messagetime`,`Messagecontent`,`Messagemedia`) "+
 						" VALUES ('"+this.getFromUserName()+"','','"+this.getMsgType()+"','"+this.getCreateTime()+"','"+this.getContent()+"','')";
-		JSONResponse jr=new JSONResponse();
-		ExecResult er=jr.getExecResult(sql, null);
+//		JSONResponse jr=new JSONResponse();
+//		ExecResult er=jr.getExecResult(sql, null);
 	}
 
 }

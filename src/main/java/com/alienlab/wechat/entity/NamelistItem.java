@@ -41,7 +41,7 @@ public class NamelistItem {
     @ApiModelProperty(value="特权")
     private String privilege="";
 
-    @Id
+    @Basic
     @Column(name = "namelist_no")
     public Long getNo() {
         return no;
@@ -50,7 +50,7 @@ public class NamelistItem {
         this.no = no;
     }
 
-    @Basic
+    @Id
     @Column(name = "namelist_phone")
     public String getPhone() {
         return phone;

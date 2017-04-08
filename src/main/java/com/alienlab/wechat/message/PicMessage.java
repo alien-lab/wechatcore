@@ -2,7 +2,6 @@ package com.alienlab.wechat.message;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alienlab.wechat.common.ExecResult;
-import com.alienlab.wechat.common.JSONResponse;
 
 /**
  * 图片消息类
@@ -48,9 +47,9 @@ public class PicMessage extends BaseMessage {
 				" VALUES ('"+this.getFromUserName()+"','','"+this.getMsgType()+"','"+this.getCreateTime()+"','"+this.getPicUrl()+"','')";
 		String logsql="INSERT INTO `alienlab_wechat`.`wx_media_log`(`media_log_id`,`Openid`,`Unionid`,`Media_type`,`Media_direction`,`Media_remote_url`,`Media_size`,`Media_name`,`Media_local_url`,`Media_id`) "+
 				" VALUES ('"+this.getMsgId()+"','"+this.getFromUserName()+"','','"+this.getMsgType()+"','','','0','','','"+this.getMediaId()+"')";
-		JSONResponse jr=new JSONResponse();
-		ExecResult er=jr.getExecResult(sql, null);
-		ExecResult er1=jr.getExecResult(logsql, null);
+//		JSONResponse jr=new JSONResponse();
+//		ExecResult er=jr.getExecResult(sql, null);
+//		ExecResult er1=jr.getExecResult(logsql, null);
 	}
 
 }

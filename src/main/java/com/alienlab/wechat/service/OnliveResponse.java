@@ -10,6 +10,7 @@ import com.alienlab.wechat.entity.NamelistItem;
 import com.alienlab.wechat.entity.OnliveMember;
 import com.alienlab.wechat.entity.OnliveRoom;
 import com.alienlab.wechat.message.*;
+import com.alienlab.wechat.utils.IResponse;
 import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSONObject;
@@ -50,8 +51,8 @@ public class OnliveResponse implements IResponse {
 					if(count>9)count=9;
 					for(int i=0;i<count;i++){
 						OnliveRoom room=rooms.get(i);
-						ArticleObject onliveroom = room.getArticle();
-						articles.add(onliveroom);
+						ArticleObject onliveroom = new ArticleObject();
+						articles.add(onliveroom.getArticle(room));
 					}
 					res=BaseResponse.getNewsResponse(articles, msg);
 				}else if(content.equals("我要直播")){
@@ -123,7 +124,8 @@ public class OnliveResponse implements IResponse {
 					onliveStreamService.publishStream(s);
 					logger.info("publist stream finish。。。。。"+System.currentTimeMillis());
 					List<ArticleObject> articles=new ArrayList<ArticleObject>();
-					articles.add(room.getArticle());
+					ArticleObject onliveroom = new ArticleObject();
+					articles.add(onliveroom.getArticle(room));
 					res=BaseResponse.getNewsResponse(articles, msg);
 					//res=BaseResponse.getTextResponse("消息已成功直播，点击链接进入直播间>>><a href=\""+room.getShareLink()+"\">"+room.getName()+"</a>", msg);
 				}
@@ -147,9 +149,9 @@ public class OnliveResponse implements IResponse {
 							res=BaseResponse.getTextResponse("对不起，系统没有找到对应的直播间。",msg);
 						}else{
 							//返回直播间图文
-							ArticleObject onliveroom=room.getArticle();
+							ArticleObject onliveroom = new ArticleObject();
 							List<ArticleObject> articles=new ArrayList<ArticleObject>();
-							articles.add(onliveroom);
+							articles.add(onliveroom.getArticle(room));
 							res=BaseResponse.getNewsResponse(articles, msg);
 						}
 					}
@@ -229,7 +231,7 @@ public class OnliveResponse implements IResponse {
 		room.setStatus("1");
 		room.setManager(name);
 		room.setCover(OnliveStart.onlivebasepath+"onlive/mobile/image/defaultcover.png");
-		room.setBrandcover(name.getHeaderimg());
+		room.setBrandCover(name.getHeaderimg());
 		
 		if(onliveRoomService.addOnliveRoom(room) != null){
 			onliveMemberService.joinRoom(new OnliveMember(room.getRoomNo(),room.getManager()));

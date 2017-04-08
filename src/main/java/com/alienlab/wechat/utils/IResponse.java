@@ -1,4 +1,4 @@
-package com.alienlab.wechat.common;
+package com.alienlab.wechat.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alienlab.wechat.message.BaseMessage;
