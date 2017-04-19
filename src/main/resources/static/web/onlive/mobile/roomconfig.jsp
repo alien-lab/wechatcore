@@ -3,6 +3,8 @@
      <%@page import="com.alienlab.wechat.service.OnliveRoomService"%>
     <%@page import="com.alienlab.wechat.entity.OnliveRoom"%>
 <%@ page import="com.alienlab.wechat.common.TypeUtils" %>
+<%@ page import="com.alienlab.wechat.service.NamelistItemService" %>
+<%@ page import="com.alienlab.wechat.entity.NamelistItem" %>
 <!DOCTYPE html">
 <html>
 <%@ include file="wxutil.jsp"%>
@@ -11,12 +13,14 @@
 	String roomjo = "";
 	OnliveRoom room = null;
 	OnliveRoomService onliveRoomService = null;
+	NamelistItemService namelistItemService = null;
 	if(openId!=null&&!openId.equals("")){
 		room = onliveRoomService.findOnliveRoomByRoomNo(roomNo);
+		NamelistItem name = namelistItemService.findNamelistItemByPhone(room.getManagerPhone());
 		//验证直播间是否存在
 		if(room != null){
 			//验证直播间是否由当前用户管理
-			if(!room.getManager().getOpenId().equals(openId)){
+			if(!name.getOpenId().equals(openId)){
 				System.out.println("您不是该直播间管理员");
 				return;
 			}else{
@@ -178,7 +182,7 @@ body{
 	</div>
 	<div class="weui_cells weui_cell_bd weui_cell_primary">
 		<div class="weui_cell cover">
-		<div id="roomname"><%=room.getName() %><br/><span class="time"><%=room.getLayoutTime()%></span></div>
+		<div id="roomname"><%=room.getName() %><br/><span class="time"><%=onliveRoomService.getLayoutTime(roomNo)%></span></div>
 			<img id="roomcover" src="<%=room.getCover() %>">
 			<div class="clear"></div>
 		</div>
@@ -193,7 +197,7 @@ body{
 	      <p>参与者</p>
 	    </div>
 	    <div id="membercount" class="weui_cell_ft" >
-	      	<%=room.getMembers().keySet().size() %>人
+	      	<%=room.getMembers().length() %>人
 	    </div>
 	  </a>
 	  <div class="weui_cell weui_cell_switch">
@@ -433,7 +437,7 @@ body{
 				  	
 				  	$("#members .weui-popup-modal").append($(mdom));
 			}
-			
+
 			if(isover=="1"){
 				$(".mem_isvip").attr("disabled",true);
 			}

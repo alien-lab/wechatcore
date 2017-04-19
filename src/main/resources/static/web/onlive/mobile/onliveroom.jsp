@@ -3,23 +3,27 @@
 <%@page import="com.alienlab.wechat.service.OnliveRoomService"%>
     <%@page import="com.alienlab.wechat.entity.OnliveRoom"%>
     <%@page import="com.alienlab.wechat.common.TypeUtils"%>
+<%@ page import="com.alienlab.wechat.entity.NamelistItem" %>
+<%@ page import="com.alienlab.wechat.service.NamelistItemService" %>
 <!DOCTYPE html">
 <html>
 <%@ include file="wxutil.jsp"%>
 <% 
 	String roomNo = request.getParameter("state");
 	OnliveRoomService onliveRoomService = null;
+	NamelistItemService namelistItemService = null;
 	OnliveRoom room = onliveRoomService.findOnliveRoomByRoomNo(roomNo);
+	NamelistItem name = namelistItemService.findNamelistItemByPhone(room.getManagerPhone());
 	String currentTime=TypeUtils.getTime();
 	if(room==null){
 		response.sendRedirect("noroom.jsp");
 		return;
 	}
-	if(room.getManager()==null){
+	if(room.getManagerPhone()==null){
 		response.sendRedirect("noroom.jsp");
 		return;
 	}
-	if(room.getManager().getStatus().equals("0")){
+	if(name.getStatus().equals("0")){
 		response.sendRedirect("noroom.jsp");
 		return;
 	}
@@ -31,11 +35,11 @@
 	//是否是演讲者
 	String isspeaker="0"; //是否演讲嘉宾
 	//如果是直播间管理员，更新管理员信息
-	if(openId.equals(room.getManager().getOpenId())){
+	if(openId.equals(name.getOpenId())){
 		ismanager="1";
 		isspeaker="1";
-		room.getManager().setNickName(nickName);
-		room.getManager().setHeaderimg(headerimg);
+		name.setNickName(nickName);
+		name.setHeaderimg(headerimg);
 		onliveRoomService.updateOnliveRoom(room);
 	}
 	String autoload="1";//是否自动加载
@@ -64,7 +68,7 @@
 	String joinMsg=room.getJoinMsg(); //是否发送成员进入消息
 	String commentMsg=room.getCommentMsg(); //是否发送个评论消息
 	
-	if(room.getSpeakerOpenId().indexOf(openId)>=0){
+	if(room.getSpeakers().indexOf(openId)>=0){
 		isspeaker="1";
 	}
 %>
@@ -573,7 +577,7 @@
 			<div class="headerimgdiv"><img class="headerimg" src="<%=room.getBrandCover() %>"></div>
 			<div class="roomname">
 				<div class="r_name"><%=room.getName() %></div>
-				<div class="r_time"><%=room.getLayoutTime()%></div>
+				<div class="r_time"><%=onliveRoomService.getLayoutTime(roomNo)%></div>
 				<div class="line"></div>
 				<div class="r_desc"><%=room.getDescription() %></div>
 				<div class="weui_btn" id="btnenter">进入</div>
@@ -586,7 +590,7 @@
 				<div id="s_name_text"><%=room.getName()%></div>
 				<div id="s_tags">
 					<span id="s_status"><%=roomstatus%></span>
-					<span id="membercount"><%=room.getMembers().keySet().size() %>人</span>
+					<span id="membercount"><%=room.getMembers().length() %>人</span>
 				</div>
 			</div>
 			<div class="s_h_icon">

@@ -26,7 +26,7 @@
  		member.setOpenId("alienzoo_test"+Calendar.getInstance().getTimeInMillis());
  		member.setNick("机器人用户");
  		member.setLocalPic("http://www.bigercat.com/wechatsolution/img/azlogo.jpg");
- 		member.setPic("http://www.bigercat.com/wechatsolution/img/azlogo.jpg");
+// 		member.setPic("http://www.bigercat.com/wechatsolution/img/azlogo.jpg");
  		member.setVip(false);
  		member.setJoinType("test");
  		member.setRoomNo(roomNo);
