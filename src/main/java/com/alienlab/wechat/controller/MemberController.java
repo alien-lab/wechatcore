@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alienlab.wechat.common.ExecResult;
 import com.alienlab.wechat.entity.OnliveMember;
 import com.alienlab.wechat.entity.OnliveRoom;
+import com.alienlab.wechat.service.NamelistItemService;
 import com.alienlab.wechat.service.OnliveMemberService;
 import com.alienlab.wechat.service.OnliveRoomService;
 import io.swagger.annotations.Api;
@@ -12,9 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -28,6 +27,8 @@ import java.util.Map.Entry;
 @RestController
 @RequestMapping("/wechatcore-api")
 public class MemberController {
+    @Autowired
+    private NamelistItemService namelistItemService;
     @Autowired
     private OnliveMemberService onliveMemberService;
     @Autowired
@@ -67,7 +68,7 @@ public class MemberController {
     }
 
     @ApiOperation(value = "查看直播间成员")
-    @PostMapping(value="onlive/getMembers")
+    @GetMapping(value="onlive/getMembers")
     public ResponseEntity getMembers(HttpServletRequest request){
         String roomNo = request.getParameter("roomNo");
         String openId = request.getParameter("openId");
@@ -76,13 +77,14 @@ public class MemberController {
             ExecResult er = new ExecResult(false,"直播间不存在");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(er);
         }else{
-            if(!room.getManager().getOpenId().equals(openId)){
+            if(!namelistItemService.findNamelistItemByPhone(room.getManagerPhone()).getOpenId().equals(openId)){
                 ExecResult er = new ExecResult(false,"对不起，您不是直播间管理员。");
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(er);
             }
-            List<OnliveMember> members = new ArrayList<OnliveMember>();
-            for(Entry e : room.getMembers().entrySet()){
-                members.add((OnliveMember)e.getValue());
+            List<OnliveMember> members = new ArrayList<>();
+            List<OnliveMember> onliveMemberList = onliveMemberService.findOnliveMemberByRoomNo(roomNo);
+            for(OnliveMember e : onliveMemberList){
+                members.add(e);
             }
             ExecResult er = new ExecResult();
             er.setResult(true);
@@ -92,7 +94,7 @@ public class MemberController {
     }
 
     @ApiOperation(value = "设置为直播间嘉宾")
-    @PostMapping(value="onlive/setVip")
+    @PutMapping(value="onlive/setVip")
     public ResponseEntity setVip(HttpServletRequest request){
         String roomNo = request.getParameter("roomNo");
         String openId = request.getParameter("openId");
@@ -101,7 +103,7 @@ public class MemberController {
             ExecResult er = new ExecResult(false,"直播间不存在");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(er);
         }
-        OnliveMember member = room.getMembers().get(openId);
+        OnliveMember member = onliveMemberService.getOnliveMember(roomNo, openId);
         if(member!=null){
             if(onliveMemberService.addSpeaker(member)){
                 ExecResult er = new ExecResult(true,"设置成功");
@@ -117,7 +119,7 @@ public class MemberController {
     }
 
     @ApiOperation(value = "移除直播间嘉宾")
-    @PostMapping(value="onlive/removeVip")
+    @PutMapping(value="onlive/removeVip")
     public ResponseEntity removeVip(HttpServletRequest request){
         String roomNo = request.getParameter("roomNo");
         String openId = request.getParameter("openId");

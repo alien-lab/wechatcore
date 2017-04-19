@@ -6,6 +6,8 @@ import com.alienlab.wechat.entity.OnliveRoom;
 import com.alienlab.wechat.entity.OnliveStream;
 import com.alienlab.wechat.repository.OnliveStreamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,8 +35,12 @@ public class OnliveStreamService {
     }
 
     //根据发布时间顺序获得内容流
-    public List<OnliveStream> getStreams(String roomNo, String date, String compare, String sorttype){
-        return onliveStreamRepository.findOnliveStreamByRoomNoOrderByContentTimeDesc(roomNo, date, compare, sorttype);
+    public Page<OnliveStream> getStreamsDESC(String roomNo, String date, Pageable page){
+        return onliveStreamRepository.findStreamDESC(roomNo, date, page);
+    }
+
+    public Page<OnliveStream> getStreamsASC(String roomNo, String date, Pageable page){
+        return onliveStreamRepository.findStreamASC(roomNo, date, page);
     }
 
     //更新内容流

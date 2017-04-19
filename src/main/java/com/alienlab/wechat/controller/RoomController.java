@@ -19,9 +19,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +55,7 @@ public class RoomController {
         room.setStartTime(request.getParameter("bc_starttime").replace("T","").replace("-","").replace(":",""));
         room.setStatus(request.getParameter("bc_status"));
         NamelistItem name = namelistItemService.findNamelistItemByPhone(request.getParameter("bc_manager_phone"));
-        room.setManager(name);
+        room.setManagerPhone(name.getPhone());
         String covermedia = request.getParameter("bc_cover");
         String iconmedia = request.getParameter("bc_vip_cover");
         ServletConfig config = null;
@@ -82,7 +80,7 @@ public class RoomController {
         OnliveRoom onliveRoom = onliveRoomService.addOnliveRoom(room);
         if(onliveRoom != null){
             //将管理员自动添加到直播间中。
-            onliveMemberService.joinRoom(new OnliveMember(room.getRoomNo(),room.getManager()));
+            onliveMemberService.joinRoom(new OnliveMember(room.getRoomNo(),namelistItemService.findNamelistItemByPhone(room.getManagerPhone())));
             ExecResult er = new ExecResult(true,"您的直播间《"+room.getName()+"》已成功创建。请在"+room.getStartTime()+"至"+room.getEndTime()+" 之间在此服务号上发送直播内容。");
             return ResponseEntity.ok().body(er);
         }else{
@@ -92,15 +90,15 @@ public class RoomController {
     }
 
     @ApiOperation(value = "加载直播间成员数量")
-    @PostMapping(value="onlive/loadRoomMemberCount")
+    @GetMapping(value="onlive/loadRoomMemberCount")
     public ResponseEntity loadRoomMemberCount(HttpServletRequest request){
-        String roomNo = request.getParameter("roomno");
+        String roomNo = request.getParameter("roomNo");
         OnliveRoom room = onliveRoomService.findOnliveRoomByRoomNo(roomNo);
         ExecResult er = new ExecResult();
         JSONObject data = new JSONObject();
         if(room!=null){
             er.setResult(true);
-            data.put("count", room.getMembers().keySet().size());
+            data.put("count", onliveMemberService.findOnliveMemberByRoomNo(roomNo).size());
             er.setData(data);
             return ResponseEntity.ok().body(er);
         }else{
@@ -112,7 +110,7 @@ public class RoomController {
     }
 
     @ApiOperation(value = "删除直播间")
-    @PostMapping(value="onlive/deleteRoom")
+    @DeleteMapping(value="onlive/deleteRoom")
     public ResponseEntity deleteRoom(HttpServletRequest request){
         String roomNo = request.getParameter("roomNo");
         boolean result = onliveRoomService.deleteOnliveRoom(roomNo);
@@ -126,7 +124,7 @@ public class RoomController {
     }
 
     @ApiOperation(value = "管理直播间")
-    @PostMapping(value="onlive/getUserRoom")
+    @GetMapping(value="onlive/getUserRoom")
     public ResponseEntity getUserRoom(HttpServletRequest request){
         String openId = request.getParameter("openId");
         logger.error("getuserroom.do>>>>openId:"+openId);
@@ -153,7 +151,7 @@ public class RoomController {
     }
 
     @ApiOperation(value = "获取直播间最新动态")
-    @PostMapping(value="onlive/getRoomLatestInfo")
+    @GetMapping(value="onlive/getRoomLatestInfo")
     public ResponseEntity getRoomLatestInfo(HttpServletRequest request){
         String roomNo = request.getParameter("roomNo");
         OnliveRoom room = onliveRoomService.findOnliveRoomByRoomNo(roomNo);
@@ -171,7 +169,7 @@ public class RoomController {
     }
 
     @ApiOperation(value = "更新直播间")
-    @PostMapping(value="onlive/renameRoom")
+    @PutMapping(value="onlive/renameRoom")
     public ResponseEntity renameRoom(HttpServletRequest request){
         String roomNo = request.getParameter("roomNo");
         String newName = request.getParameter("name");
@@ -188,7 +186,7 @@ public class RoomController {
     }
 
     @ApiOperation(value = "设置选项")
-    @PostMapping(value="onlive/setSwitch")
+    @PutMapping(value="onlive/setSwitch")
     public ResponseEntity setSwitch(HttpServletRequest request){
         String roomNo = request.getParameter("roomNo");
         String value = request.getParameter("value");

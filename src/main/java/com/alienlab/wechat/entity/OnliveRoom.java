@@ -30,11 +30,11 @@ public class OnliveRoom {
     @ApiModelProperty(value="嘉宾介绍")
     private String guest;
     @ApiModelProperty(value="主讲人")
-    private SortedMap<String, OnliveMember> speakers = new TreeMap<String ,OnliveMember>();
+    private String speakers;
     @ApiModelProperty(value="直播间成员")
-    private SortedMap<String, OnliveMember> members = new TreeMap<String ,OnliveMember>();
+    private String members;
     @ApiModelProperty(value="直播间管理员手机号")
-    private NamelistItem manager;
+    private String managerPhone;
     @ApiModelProperty(value="直播间创建时间")
     private String creatTime;
     @ApiModelProperty(value="直播间状态")
@@ -109,36 +109,33 @@ public class OnliveRoom {
         this.guest = guest;
     }
 
-    @OneToMany
-    @JoinColumn(name = "bc_manager", referencedColumnName = "member_openid")
-    public SortedMap<String, OnliveMember> getSpeakers() {
+    @Basic
+    @Column(name = "bc_manager")
+    public String getSpeakers() {
         return speakers;
     }
 
-    public void setSpeakers(SortedMap<String, OnliveMember> speakers) {
+    public void setSpeakers(String speakers) {
         this.speakers = speakers;
     }
 
-    @OneToMany
-    @JoinColumn(name = "bc_manager_union", referencedColumnName = "member_openid")
-//    public SortedMap<String, OnliveMember> getMembers() {
-//        return members;
-//    }
-    public Map<String, OnliveMember> getMembers() {
+    @Basic
+    @Column(name = "bc_manager_union")
+    public String getMembers() {
         return members;
     }
-    public void setMembers(SortedMap<String, OnliveMember> members) {
+    public void setMembers(String members) {
         this.members = members;
     }
 
-    @OneToOne
-    @JoinColumn(name = "bc_manager_phone", referencedColumnName = "namelist_phone")
-    public NamelistItem getManager() {
-        return manager;
+    @Basic
+    @Column(name = "bc_manager_phone")
+    public String getManagerPhone() {
+        return managerPhone;
     }
 
-    public void setManager(NamelistItem name) {
-        this.manager = name;
+    public void setManagerPhone(String managerPhone) {
+        this.managerPhone = managerPhone;
     }
 
     @Basic
@@ -321,7 +318,7 @@ public class OnliveRoom {
     }
 
     public OnliveRoom(String roomNo, String name, String description, String project, String guest,
-                      SortedMap<String, OnliveMember> speakers, SortedMap<String, OnliveMember> members, NamelistItem manager,
+                      String speakers, String members, String managerPhone,
                       String creatTime, String status, String latestText, String latestPic, String qrcode, String startTime,
                       String endTime, String speakMode, String cover, String brandCover, String joinMsg, String commentMsg) {
         this.roomNo = roomNo;
@@ -331,7 +328,7 @@ public class OnliveRoom {
         this.guest = guest;
         this.speakers = speakers;
         this.members = members;
-        this.manager = manager;
+        this.managerPhone = managerPhone;
         this.creatTime = creatTime;
         this.status = status;
         this.latestText = latestText;
@@ -346,8 +343,8 @@ public class OnliveRoom {
         this.commentMsg = commentMsg;
     }
 
-    public String getSpeakerOpenId(){
-        List<OnliveMember> s = getSpeaker();
+    /*public String getSpeakerOpenId(){
+        List<OnliveMember> s = getSpeakers();
         String openids="";
         for(int i=0;i<s.size();i++){
             if(i==0){
@@ -359,10 +356,27 @@ public class OnliveRoom {
         return openids;
     }
 
+    public OnliveMember getSpeaker(String openId) {
+        for(OnliveMember speaker :speakers){
+            if(speaker.getOpenId().equals(openId)){
+                return speaker;
+            }
+        }
+        return null;
+    }
+
     public OnliveMember getMember(String nickname){
-        for(String openid : members.keySet()){
-            OnliveMember member = members.get(openid);
+        for(OnliveMember member :members){
             if(member.getNick().equals(nickname)){
+                return member;
+            }
+        }
+        return null;
+    }
+
+    public OnliveMember getOnliveMember(String openId){
+        for(OnliveMember member :members){
+            if(member.getOpenId().equals(openId)){
                 return member;
             }
         }
@@ -384,13 +398,5 @@ public class OnliveRoom {
         }else{
             return this.getStartTime()+"~"+this.getEndTime();
         }
-    }
-
-    public List<OnliveMember> getSpeaker() {
-        List<OnliveMember> s=new ArrayList<OnliveMember>();
-        for(Map.Entry<String,OnliveMember> e:speakers.entrySet()){
-            s.add(e.getValue());
-        }
-        return s;
-    }
+    }*/
 }

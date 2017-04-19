@@ -7,18 +7,14 @@ import com.alienlab.wechat.entity.OnliveComment;
 import com.alienlab.wechat.entity.OnliveMember;
 import com.alienlab.wechat.entity.OnliveRoom;
 import com.alienlab.wechat.message.PushMessage;
-import com.alienlab.wechat.service.OnliveCommentService;
-import com.alienlab.wechat.service.OnlivePraiseService;
-import com.alienlab.wechat.service.OnliveRoomService;
+import com.alienlab.wechat.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by Wang on 2017/4/7.
@@ -28,7 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/wechatcore-api")
 public class CommentController {
     @Autowired
+    private NamelistItemService namelistItemService;
+    @Autowired
     private OnliveCommentService onliveCommentService;
+    @Autowired
+    private OnliveMemberService onliveMemberService;
     @Autowired
     private OnliveRoomService onliveRoomService;
     @Autowired
@@ -56,11 +56,11 @@ public class CommentController {
             ExecResult er = new ExecResult(true,"评论成功");
             if(er.getResult()>0){
                 if(room.getCommentMsg().equals("1")){
-                    OnliveMember member = room.getMembers().get(openId);
+                    OnliveMember member = onliveMemberService.getOnliveMember(roomNo, openId);
                     if(member!=null){
                         String text = member.getNick()+" 评论了您："+comment;
                         TextInfo ti = new TextInfo(text);
-                        ti.setToUserName(room.getManager().getOpenId());
+                        ti.setToUserName(namelistItemService.findNamelistItemByPhone(room.getManagerPhone()).getOpenId());
                         PushMessage.sendMessage(ti);
                     }
                 }
@@ -70,7 +70,7 @@ public class CommentController {
     }
 
     @ApiOperation(value = "删除评论")
-    @PostMapping(value="onlive/deleteComment")
+    @DeleteMapping(value="onlive/deleteComment")
     public ResponseEntity deleteComment(HttpServletRequest request){
         String commentno = request.getParameter("commentNo");
         Long commentNo = Long.parseLong(commentno);
@@ -87,7 +87,7 @@ public class CommentController {
     }
 
     @ApiOperation(value = "查看点赞和评论")
-    @PostMapping(value="onlive/getPraiseComment")
+    @GetMapping(value="onlive/getPraiseComment")
     public ResponseEntity getPraiseComment(HttpServletRequest request){
         String roomNo = request.getParameter("roomNo");
         String streamno = request.getParameter("streamNo");

@@ -6,6 +6,8 @@ import com.alienlab.wechat.entity.OnliveMember;
 import com.alienlab.wechat.entity.OnlivePraise;
 import com.alienlab.wechat.entity.OnliveRoom;
 import com.alienlab.wechat.message.PushMessage;
+import com.alienlab.wechat.service.NamelistItemService;
+import com.alienlab.wechat.service.OnliveMemberService;
 import com.alienlab.wechat.service.OnlivePraiseService;
 import com.alienlab.wechat.service.OnliveRoomService;
 import io.swagger.annotations.Api;
@@ -27,7 +29,11 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/wechatcore-api")
 public class PraiseController {
     @Autowired
+    private NamelistItemService namelistItemService;
+    @Autowired
     private OnlivePraiseService onlivePraiseService;
+    @Autowired
+    private OnliveMemberService onliveMemberService;
     @Autowired
     private OnliveRoomService onliveRoomService;
 
@@ -48,11 +54,11 @@ public class PraiseController {
             ExecResult er = new ExecResult(true,"点赞成功");
             if(er.getResult()>0){
                 if(room.getCommentMsg().equals("1")){
-                    OnliveMember member = room.getMembers().get(openId);
+                    OnliveMember member = onliveMemberService.getOnliveMember(roomNo, openId);
                     if(member!=null){
                         String text = member.getNick()+" 赞了您的直播内容。";
                         TextInfo ti = new TextInfo(text);
-                        ti.setToUserName(room.getManager().getOpenId());
+                        ti.setToUserName(namelistItemService.findNamelistItemByPhone(room.getManagerPhone()).getOpenId());
                         PushMessage.sendMessage(ti);
                     }
                 }
@@ -60,6 +66,4 @@ public class PraiseController {
             return ResponseEntity.ok().body(er);
         }
     }
-
-
 }

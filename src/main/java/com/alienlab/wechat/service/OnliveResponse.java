@@ -75,7 +75,7 @@ public class OnliveResponse implements IResponse {
 					s.put("openid", msg.getFromUserName());
 					s.put("content_type", msg.getMsgType());
 					String nick = "";
-					OnliveMember member = room.getMembers().get(msg.getFromUserName());
+					OnliveMember member = onliveMemberService.getOnliveMember(roomNo, msg.getFromUserName());
 					if (member != null) {
 						nick = member.getNick();
 					}
@@ -229,12 +229,12 @@ public class OnliveResponse implements IResponse {
 		room.setSpeakMode("speaker");
 		room.setStartTime(stime);
 		room.setStatus("1");
-		room.setManager(name);
+		room.setManagerPhone(name.getPhone());
 		room.setCover(OnliveStart.onlivebasepath+"onlive/mobile/image/defaultcover.png");
 		room.setBrandCover(name.getHeaderimg());
 		
 		if(onliveRoomService.addOnliveRoom(room) != null){
-			onliveMemberService.joinRoom(new OnliveMember(room.getRoomNo(),room.getManager()));
+			onliveMemberService.joinRoom(new OnliveMember(room.getRoomNo(),namelistItemService.findNamelistItemByPhone(room.getManagerPhone())));
 			return BaseResponse.getTextResponse("直播间已创建，现在直接向服务号发送内容，即可直播。",msg);
 		}else{
 			return BaseResponse.getTextResponse("直播间创建失败，您在此时段可能已有直播间。",msg);

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by Wang on 2017/3/27.
@@ -11,7 +12,8 @@ import javax.persistence.*;
 @ApiModel(value="直播间点赞实体类")
 @Entity
 @Table(name = "wx_onlive_stream_praise")
-public class OnlivePraise {
+@IdClass(OnlivePraiseKey.class)
+public class OnlivePraise implements Serializable{
     @ApiModelProperty(value="内容流序号")
     private Long streamNo;
     @ApiModelProperty(value="直播间编号")
@@ -68,5 +70,28 @@ public class OnlivePraise {
         this.streamNo = streamNo;
         this.roomNo = roomNo;
         this.openId = openId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OnlivePraise praise = (OnlivePraise) o;
+
+        if (!streamNo.equals(praise.streamNo)) return false;
+        if (!roomNo.equals(praise.roomNo)) return false;
+        if (!openId.equals(praise.openId)) return false;
+        return praiseTime.equals(praise.praiseTime);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = streamNo.hashCode();
+        result = 31 * result + roomNo.hashCode();
+        result = 31 * result + openId.hashCode();
+        result = 31 * result + praiseTime.hashCode();
+        return result;
     }
 }

@@ -5,6 +5,7 @@ import com.alienlab.wechat.message.PushMessage;
 import com.alienlab.wechat.common.TextInfo;
 import com.alienlab.wechat.entity.OnliveMember;
 import com.alienlab.wechat.entity.OnliveRoom;
+import com.alienlab.wechat.repository.NamelistItemRepository;
 import com.alienlab.wechat.repository.OnliveMemberRepository;
 import com.alienlab.wechat.repository.OnliveRoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import java.util.List;
  */
 @Service
 public class OnliveMemberService {
+    @Autowired
+    private NamelistItemRepository namelistItemRepository;
     @Autowired
     private OnliveMemberRepository onliveMemberRepository;
     @Autowired
@@ -62,26 +65,46 @@ public class OnliveMemberService {
         }
     }
 
+    public OnliveMember getOnliveMember(String roomNo, String openId){
+        List<OnliveMember> members = onliveMemberRepository.findOnliveMemberByRoomNo(roomNo);
+        for(OnliveMember member : members){
+            if(member.getOpenId().equals(openId)){
+                return member;
+            }
+        }
+        return null;
+    }
+
+    public OnliveMember getMember(String roomNo, String nickName){
+        List<OnliveMember> members = onliveMemberRepository.findOnliveMemberByRoomNo(roomNo);
+        for(OnliveMember member : members){
+            if(member.getNick().equals(nickName)){
+                return member;
+            }
+        }
+        return null;
+    }
+
     //成员加入直播间
     public boolean joinRoom(OnliveMember member){
         //如果在列表中不存在，表示新用户
         OnliveRoom room = new OnliveRoom();
-        if(!room.getMembers().containsKey(member.getOpenId())){
+        if(getOnliveMember(room.getRoomNo(),member.getOpenId()) != null){
             if(onliveMemberRepository.save(member) != null){
                 if(room.getJoinMsg().equals("1")){
                     String text = member.getNick()+" 进入您的直播间《"+room.getName()+"》。";
                     TextInfo ti = new TextInfo(text);
-                    ti.setToUserName(room.getManager().getOpenId());
+                    ti.setToUserName(member.getOpenId());
                     PushMessage.sendMessage(ti);
                 }
             }
         }else{
             //如果成员已存在，获得成员是否vip属性，更新member
-            OnliveMember existsmem = room.getMembers().get(member.getOpenId());
+            OnliveMember existsmem = getOnliveMember(room.getRoomNo(), member.getOpenId());
             member.setVip(existsmem.isVip());
             onliveMemberRepository.save(member);
         }
-       room.getMembers().put(member.getOpenId(),member);
+       room.getMembers().concat(member.getOpenId());
         /*if(member.isVip()){
         	addSpeaker(member);
         }*/
@@ -89,8 +112,8 @@ public class OnliveMemberService {
     }
 
     //添加嘉宾
-    public boolean addSpeaker(String nickname, OnliveRoom room){
-        OnliveMember member = room.getMember(nickname);
+    public boolean addSpeaker(String nickName, OnliveRoom room){
+        OnliveMember member = getMember(room.getRoomNo(),nickName);
         member.setVip(true);
         return addSpeaker(member);
     }
@@ -102,10 +125,10 @@ public class OnliveMemberService {
             onliveMemberRepository.save(member);
             TextInfo t = new TextInfo();
             t.setToUserName(member.getOpenId());
-            t.setContent(room.getManager().getNickName()+"邀请您做他的直播嘉宾，快进来看看吧：<a href=\""+room.getShareLink()+"\">"+room.getName()+"</a>");
+            t.setContent(namelistItemRepository.findNamelistItemByPhone(room.getManagerPhone()).getNickName()+"邀请您做他的直播嘉宾，快进来看看吧：<a href=\""+room.getShareLink()+"\">"+room.getName()+"</a>");
             PushMessage.sendMessage(t);
         }
-        room.getSpeakers().put(member.getOpenId(),member);
+        room.getSpeakers().concat(member.getOpenId());
 
         //此处需要增加响应监听
         ResponseConfig rc = ResponseConfig.getConfigById(room.getRoomNo());
@@ -124,10 +147,10 @@ public class OnliveMemberService {
     }
 
     //移除嘉宾
-    public boolean removeSpeaker(String openid, String roomNo){
+    public boolean removeSpeaker(String openId, String roomNo){
         OnliveRoom room = onliveRoomRepository.findOnliveRoomByRoomNo(roomNo);
-        if(room.getSpeakers().containsKey(openid)){
-            OnliveMember member = room.getMembers().get(openid);
+        if(getOnliveMember(roomNo,openId)!=null){
+            OnliveMember member = getOnliveMember(roomNo, openId);
             if(member.isVip()){
                 return removeSpeaker(member);
             }else{
@@ -144,7 +167,7 @@ public class OnliveMemberService {
             member.setVip(false);
             onliveMemberRepository.save(member);
         }
-        room.getSpeakers().remove(member.getOpenId());
+        room.getSpeakers().replace(member.getOpenId(),"");
 
         //此处删除响应监听
         ResponseConfig rc=ResponseConfig.getConfigById(room.getRoomNo());
