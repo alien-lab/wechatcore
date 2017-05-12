@@ -321,7 +321,7 @@
 	background:#fff;
 }
 .weui_uploader_input_wrp .imgview{
-	position:ablolute;
+	position:absolute;
 	height:100%;
 	top:0;
 	left:0%;

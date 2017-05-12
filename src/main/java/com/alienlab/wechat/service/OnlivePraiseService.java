@@ -15,13 +15,13 @@ public class OnlivePraiseService {
     @Autowired
     private OnlivePraiseRepository onlivePraiseRepository;
 
-    //新增点赞
-    public OnlivePraise addOnlivePraise(OnlivePraise onlivePraise){
-        if(onlivePraise != null){
-            return  onlivePraiseRepository.save(onlivePraise);
-        }else{
-            return null;
-        }
+    //发布点赞
+    public void publishPraise(String openId, Long streamNo){
+        OnlivePraise praise = new OnlivePraise();
+        praise.setOpenId(openId);
+        praise.setStreamNo(streamNo);
+        onlivePraiseRepository.save(praise);
+        updateOnlivePraise(praise);
     }
 
     //根据点赞时间顺序获得当前内容的所有赞
@@ -37,7 +37,8 @@ public class OnlivePraiseService {
     //更新点赞
     public OnlivePraise updateOnlivePraise(OnlivePraise onlivePraise){
         try{
-            return onlivePraiseRepository.save(onlivePraise);
+            onlivePraise = onlivePraiseRepository.save(onlivePraise);
+            return onlivePraise;
         }catch (Exception e){
             e.printStackTrace();
             return null;

@@ -15,13 +15,14 @@ public class OnliveCommentService {
     @Autowired
     private OnliveCommentRepository onliveCommentRepository;
 
-    //新增评论
-    public OnliveComment addOnliveComment(OnliveComment onliveComment){
-        if(onliveComment != null){
-            return  onliveCommentRepository.save(onliveComment);
-        }else{
-            return null;
-        }
+    //发布评论
+    public void publishComment(String openId, Long streamNo, String content){
+        OnliveComment comment = new OnliveComment();
+        comment.setOpenId(openId);
+        comment.setStreamNo(streamNo);
+        comment.setContent(content);
+        onliveCommentRepository.save(comment);
+        updateOnliveComment(comment);
     }
 
     //根据评论时间顺序获得当前内容下的所有评论
@@ -37,7 +38,8 @@ public class OnliveCommentService {
     //更新评论
     public OnliveComment updateOnliveComment(OnliveComment onliveComment){
         try{
-            return onliveCommentRepository.save(onliveComment);
+            onliveComment = onliveCommentRepository.save(onliveComment);
+            return onliveComment;
         }catch (Exception e){
             e.printStackTrace();
             return null;

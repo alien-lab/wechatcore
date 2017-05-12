@@ -975,7 +975,7 @@ var isspeaker='<%=isspeaker%>';//是否演讲嘉宾
 					url:"onlive/loadRoomMemberCount",
 					type:"POST",
 					dataType:"JSON",
-					data:{roomno:roomno},
+					data:{roomNo:roomNo},
 					success:function(rep){
 						if(rep){
 							$("#membercount").text(rep.data.count+"人");
